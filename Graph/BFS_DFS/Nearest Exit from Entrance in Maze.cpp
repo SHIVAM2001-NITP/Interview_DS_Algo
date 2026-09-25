@@ -47,3 +47,42 @@ public:
         return -1;
     }
 };
+//JAVA
+
+class Solution {
+    int[][] directions={{0,1},{0,-1},{1,0},{-1,0}};
+
+    public int nearestExit(char[][] maze,int[] entrance) {
+        int m=maze.length,n=maze[0].length;
+
+        Queue<int[]> queue=new LinkedList<>();
+        queue.offer(new int[]{entrance[0],entrance[1]});
+        maze[entrance[0]][entrance[1]]='+';
+
+        int steps=0;
+
+        while(!queue.isEmpty()) {
+            int size=queue.size();
+
+            while(size-->0) {
+                int[] curr=queue.poll();
+                int row=curr[0],col=curr[1];
+
+                if(!(row==entrance[0]&&col==entrance[1]) && (row==0||row==m-1||col==0||col==n-1))
+                    return steps;
+
+                for(int[] dir:directions) {
+                    int r=row+dir[0],c=col+dir[1];
+
+                    if(r>=0&&r<m&&c>=0&&c<n&&maze[r][c]!='+') {
+                        queue.offer(new int[]{r,c});
+                        maze[r][c]='+';
+                    }
+                }
+            }
+            steps++;
+        }
+
+        return -1;
+    }
+}
