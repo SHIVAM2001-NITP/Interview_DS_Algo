@@ -46,3 +46,58 @@ public:
         return -1;
     }
 };
+
+// Java
+
+import java.util.*;
+
+class Solution {
+    public int minMutation(String start, String end, String[] bank) {
+
+        Set<String> bankSet = new HashSet<>(Arrays.asList(bank));
+
+        Set<String> visited = new HashSet<>();
+
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(start);
+        visited.add(start);
+
+        int level = 0;
+
+        while (!queue.isEmpty()) {
+
+            int n = queue.size();
+
+            while (n-- > 0) {
+
+                String curr = queue.poll();
+
+                if (curr.equals(end)) {
+                    return level;
+                }
+
+                for (char ch : new char[]{'A', 'C', 'G', 'T'}) {
+
+                    for (int i = 0; i < curr.length(); i++) {
+
+                        char[] chars = curr.toCharArray();
+                        chars[i] = ch;
+
+                        String neighbour = new String(chars);
+
+                        if (!visited.contains(neighbour)
+                                && bankSet.contains(neighbour)) {
+
+                            visited.add(neighbour);
+                            queue.offer(neighbour);
+                        }
+                    }
+                }
+            }
+
+            level++;
+        }
+
+        return -1;
+    }
+}
