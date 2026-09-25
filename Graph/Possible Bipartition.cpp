@@ -109,7 +109,7 @@ class Solution {
         return true;
     }
 }
-DFS — O(V + E)
+// DFS — O(V + E)
 class Solution {
     boolean isBipartite(Map<Integer,List<Integer>> adj,int node,int[] color) {
         for(int v:adj.getOrDefault(node,new ArrayList<>())) {
