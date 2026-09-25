@@ -83,3 +83,81 @@ public:
         return false;
     }
 };
+
+
+//  JAVA
+//DFS
+class Solution {
+    boolean check(Map<Integer,List<Integer>> mp,int node,int dest,boolean[] visited) {
+        if(node==dest)
+            return true;
+
+        if(visited[node])
+            return false;
+
+        visited[node]=true;
+
+        for(int next:mp.getOrDefault(node,new ArrayList<>())) {
+            if(check(mp,next,dest,visited))
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean validPath(int n,int[][] edges,int source,int destination) {
+        if(source==destination)
+            return true;
+
+        Map<Integer,List<Integer>> mp=new HashMap<>();
+
+        for(int[] edge:edges) {
+            int u=edge[0],v=edge[1];
+
+            mp.computeIfAbsent(u,k->new ArrayList<>()).add(v);
+            mp.computeIfAbsent(v,k->new ArrayList<>()).add(u);
+        }
+
+        boolean[] visited=new boolean[n];
+
+        return check(mp,source,destination,visited);
+    }
+}
+//BFS
+class Solution {
+    public boolean validPath(int n,int[][] edges,int source,int destination) {
+        Map<Integer,List<Integer>> mp=new HashMap<>();
+
+        for(int[] edge:edges) {
+            int u=edge[0],v=edge[1];
+
+            mp.computeIfAbsent(u,k->new ArrayList<>()).add(v);
+            mp.computeIfAbsent(v,k->new ArrayList<>()).add(u);
+        }
+
+        boolean[] visited=new boolean[n];
+
+        Queue<Integer> queue=new LinkedList<>();
+        queue.offer(source);
+        visited[source]=true;
+
+        while(!queue.isEmpty()) {
+            int node=queue.poll();
+
+            if(node==destination)
+                return true;
+
+            for(int next:mp.getOrDefault(node,new ArrayList<>())) {
+                if(!visited[next]) {
+                    visited[next]=true;
+                    queue.offer(next);
+                }
+            }
+        }
+
+        return false;
+    }
+}
+
+Time: O(V + E)
+Space: O(V + E)
