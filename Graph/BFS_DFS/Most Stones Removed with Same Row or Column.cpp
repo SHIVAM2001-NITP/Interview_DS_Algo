@@ -9,6 +9,7 @@
 
 
 /************************************************ C++ ************************************************/
+(Formula=Total Number of Stones-Total number of groups)
 //T.C : O(n^2)
 //S.C : O(n)
 class Solution {
