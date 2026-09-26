@@ -72,7 +72,8 @@ public:
         return false;
     }
 
-  /********************BFS************************/
+  /***********************************BFS***************************************/
+
     bool BFS(vector<vector<int>> &maze, int x, int y) {
         queue<pair<int, int>> que;
         que.push({x, y});
