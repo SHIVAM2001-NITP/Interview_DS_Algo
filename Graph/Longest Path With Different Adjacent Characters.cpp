@@ -66,3 +66,63 @@ public:
         return result;
     }
 };
+
+//JAVA  DFS
+
+class Solution {
+    int result;
+
+    int DFS(Map<Integer, List<Integer>> adj, int curr, int parent, String s) {
+
+        int longest = 0;
+        int second_longest = 0;
+
+        for (int child : adj.getOrDefault(curr, new ArrayList<>())) {
+            if (child == parent)
+                continue;
+
+            int child_longest_length = DFS(adj, child, curr, s);
+
+            if (s.charAt(child) == s.charAt(curr))
+                continue;
+
+            if (child_longest_length > second_longest)
+                second_longest = child_longest_length;
+
+            if (second_longest > longest) {
+                int temp = longest;
+                longest = second_longest;
+                second_longest = temp;
+            }
+        }
+
+        int koi_ek_acha = Math.max(longest, second_longest) + 1;
+
+        int only_root_acha = 1;
+
+        int neeche_hi_milgaya_answer = longest + second_longest + 1;
+
+        result = Math.max(result, neeche_hi_milgaya_answer);
+        result = Math.max(result, koi_ek_acha);
+        result = Math.max(result, only_root_acha);
+
+        return Math.max(koi_ek_acha, only_root_acha);
+    }
+
+    public int longestPath(int[] parent, String s) {
+        int n = parent.length;
+        result = 0;
+
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+
+        for (int i = 1; i < n; i++) {
+            int u = i;
+            int v = parent[i];
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+        }
+        DFS(adj, 0, -1, s);
+
+        return result;
+    }
+}
