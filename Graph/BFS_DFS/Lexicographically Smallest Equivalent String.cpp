@@ -113,7 +113,97 @@ class Solution {
 
 //Approach-2 (BFS - Let me know if you want a video on this)
 
+class Solution {
+    char BFS(Map<Character, List<Character>> adj, char curr) {
+        int[] visited = new int[26];
+        Queue<Character> queue = new LinkedList<>();
+        queue.offer(curr);
+        visited[curr - 'a'] = 1;
+        char minChar = curr;
+        while (!queue.isEmpty()) {
+            char u = queue.poll();
+
+            minChar = (char) Math.min(minChar, u);
+
+            for (char v : adj.getOrDefault(u, new ArrayList<>())) {
+                if (visited[v - 'a'] == 0) {
+                    visited[v - 'a'] = 1;
+                    queue.offer(v);
+                }
+            }
+        }
+        return minChar;
+    }
+
+    public String smallestEquivalentString(String s1, String s2, String baseStr) {
+        int n = s1.length();
+        Map<Character, List<Character>> adj = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            char u = s1.charAt(i);
+            char v = s2.charAt(i);
+
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            adj.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+        }
+
+        int m = baseStr.length();
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < m; i++) {
+            char ch = baseStr.charAt(i);
+
+            result.append(BFS(adj, ch));
+        }
+
+        return result.toString();
+    }
+}
+// T.C: O(m * (V + E))
+// S.C: O(V + E)
+
 
 //Approach-3 (DSU - Let me know if you want a video on this)
+// Here we don't need the graph at all. We make all equivalent characters belong to the same component.
 
+class Solution {
+    int[] parent = new int[26];
 
+    int find(int x) {
+        if (parent[x] == x)
+            return x;
+        return parent[x] = find(parent[x]);
+    }
+    void Union(int x, int y) {
+        x = find(x);
+        y = find(y);
+        if (x == y)
+            return;
+        if (x < y)
+            parent[y] = x;
+        else
+            parent[x] = y;
+    }
+
+    public String smallestEquivalentString(String s1, String s2, String baseStr) {
+        for (int i = 0; i < 26; i++)
+            parent[i] = i;
+        int n = s1.length();
+        for (int i = 0; i < n; i++) {
+            char u = s1.charAt(i);
+            char v = s2.charAt(i);
+            Union(u - 'a', v - 'a');
+        }
+
+        StringBuilder result = new StringBuilder();
+        int m = baseStr.length();
+
+        for (int i = 0; i < m; i++) {
+            char ch = baseStr.charAt(i);
+            result.append((char) (find(ch - 'a') + 'a'));
+        }
+        return result.toString();
+    }
+}
+
+// T.C: O((N + M) * α(26)) ≈ O(N + M)
+// S.C: O(26)
