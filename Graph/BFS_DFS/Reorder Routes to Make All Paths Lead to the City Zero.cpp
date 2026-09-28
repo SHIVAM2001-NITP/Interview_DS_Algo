@@ -60,3 +60,124 @@ public:
 
 
 //BFS - Soon
+
+//JAVA
+// Approach 1 — DFS using visited
+
+// Keeping the same variable names:
+
+class Solution {
+    int count = 0;
+
+    void dfs(int node, int parent, List<List<int[]>> adj, boolean[] visited) {
+        visited[node] = true;
+
+        for (int[] pair : adj.get(node)) {
+            int child = pair[0];
+            int sign = pair[1];
+
+            if (!visited[child]) {
+                count += sign;
+                dfs(child, node, adj, visited);
+            }
+        }
+    }
+
+    public int minReorder(int n, int[][] connections) {
+        List<List<int[]>> adj = new ArrayList<>();
+
+        for (int i = 0; i < n; i++)
+            adj.add(new ArrayList<>());
+
+        for (int[] connection : connections) {
+            adj.get(connection[0]).add(new int[]{connection[1], 1});
+            adj.get(connection[1]).add(new int[]{connection[0], 0});
+        }
+
+        boolean[] visited = new boolean[n];
+
+        dfs(0, -1, adj, visited);
+
+        return count;
+    }
+}
+// Approach 2 — DFS without visited
+// Since the original graph is a tree, there are no cycles. So parent is enough to avoid going back:
+class Solution {
+    int count = 0;
+
+    void dfs(int node, int parent, List<List<int[]>> adj) {
+        for (int[] pair : adj.get(node)) {
+            int child = pair[0];
+            int sign = pair[1];
+
+            if (child != parent) {
+                count += sign;
+                dfs(child, node, adj);
+            }
+        }
+    }
+
+    public int minReorder(int n, int[][] connections) {
+        List<List<int[]>> adj = new ArrayList<>();
+
+        for (int i = 0; i < n; i++)
+            adj.add(new ArrayList<>());
+
+        for (int[] connection : connections) {
+            adj.get(connection[0]).add(new int[]{connection[1], 1});
+            adj.get(connection[1]).add(new int[]{connection[0], 0});
+        }
+
+        dfs(0, -1, adj);
+
+        return count;
+    }
+}
+// Approach 3 — BFS
+class Solution {
+    int count = 0;
+
+    void bfs(int node, List<List<int[]>> adj, boolean[] visited) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(node);
+        visited[node] = true;
+
+        while (!queue.isEmpty()) {
+            node = queue.poll();
+
+            for (int[] pair : adj.get(node)) {
+                int child = pair[0];
+                int sign = pair[1];
+
+                if (!visited[child]) {
+                    count += sign;
+                    visited[child] = true;
+                    queue.offer(child);
+                }
+            }
+        }
+    }
+
+    public int minReorder(int n, int[][] connections) {
+        List<List<int[]>> adj = new ArrayList<>();
+
+        for (int i = 0; i < n; i++)
+            adj.add(new ArrayList<>());
+
+        for (int[] connection : connections) {
+            adj.get(connection[0]).add(new int[]{connection[1], 1});
+            adj.get(connection[1]).add(new int[]{connection[0], 0});
+        }
+
+        boolean[] visited = new boolean[n];
+
+        bfs(0, adj, visited);
+
+        return count;
+    }
+}
+
+// Complexity for all three:
+// Time: O(V + E)
+// Space: O(V + E)
