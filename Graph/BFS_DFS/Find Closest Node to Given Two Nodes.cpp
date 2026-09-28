@@ -5,7 +5,7 @@
     Leetcode Link               : https://leetcode.com/problems/find-closest-node-to-given-two-nodes/
 */
 
-
+//We Do not need to Use loop of neighbours here . Since it is given that that we always have a single outdegree. Meaning 1 single neighbors always
 /****************************************************************** C++ ******************************************************************/
 //Approach-1 (BFS)
 //T.C : O(V+E), V = number of vertices and E = number of edges
