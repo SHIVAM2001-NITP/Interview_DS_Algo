@@ -229,3 +229,148 @@ public:
         return clone_node;
     }
 };
+
+//JAVA
+
+// Approach 1 — DFS using vector as map
+class Solution {
+    void DFS(Node node, Node clone_node, Node[] visited) {
+        visited[node.val] = clone_node;
+
+        for (Node x : node.neighbors) {
+            if (visited[x.val] == null) {
+                Node clone = new Node(x.val);
+                clone_node.neighbors.add(clone);
+                DFS(x, clone, visited);
+            } else {
+                clone_node.neighbors.add(visited[x.val]);
+            }
+        }
+    }
+
+    public Node cloneGraph(Node node) {
+        if (node == null)
+            return null;
+
+        Node clone_node = new Node(node.val);
+
+        Node[] visited = new Node[101];
+        visited[node.val] = clone_node;
+
+        DFS(node, clone_node, visited);
+
+        return clone_node;
+    }
+}
+// Approach 2 — DFS using HashMap
+class Solution {
+    Map<Node, Node> mp = new HashMap<>();
+
+    void DFS(Node node, Node clone_node) {
+        for (Node n : node.neighbors) {
+            if (!mp.containsKey(n)) {
+                Node clone = new Node(n.val);
+                mp.put(n, clone);
+                clone_node.neighbors.add(clone);
+
+                DFS(n, clone);
+            } else {
+                clone_node.neighbors.add(mp.get(n));
+            }
+        }
+    }
+
+    public Node cloneGraph(Node node) {
+        if (node == null)
+            return null;
+
+        mp.clear();
+
+        Node clone_node = new Node(node.val);
+        mp.put(node, clone_node);
+
+        DFS(node, clone_node);
+
+        return clone_node;
+    }
+}
+// Approach 3 — BFS using vector as map
+class Solution {
+    void BFS(Queue<Node> que, Node[] visited) {
+        while (!que.isEmpty()) {
+            Node node = que.poll();
+
+            for (Node x : node.neighbors) {
+                if (visited[x.val] == null) {
+                    Node clone = new Node(x.val);
+                    visited[node.val].neighbors.add(clone);
+                    visited[x.val] = clone;
+                    que.offer(x);
+                } else {
+                    visited[node.val].neighbors.add(visited[x.val]);
+                }
+            }
+        }
+    }
+
+    public Node cloneGraph(Node node) {
+        if (node == null)
+            return null;
+
+        Node clone_node = new Node(node.val);
+
+        Node[] visited = new Node[101];
+        visited[node.val] = clone_node;
+
+        Queue<Node> que = new LinkedList<>();
+        que.offer(node);
+
+        BFS(que, visited);
+
+        return clone_node;
+    }
+}
+// Approach 4 — BFS using HashMap
+class Solution {
+    Map<Node, Node> mp = new HashMap<>();
+
+    void BFS(Queue<Node> que) {
+        while (!que.isEmpty()) {
+            Node node = que.poll();
+            Node clone_node = mp.get(node);
+
+            for (Node n : node.neighbors) {
+                if (!mp.containsKey(n)) {
+                    Node clone = new Node(n.val);
+                    mp.put(n, clone);
+                    clone_node.neighbors.add(clone);
+                    que.offer(n);
+                } else {
+                    clone_node.neighbors.add(mp.get(n));
+                }
+            }
+        }
+    }
+
+    public Node cloneGraph(Node node) {
+        if (node == null)
+            return null;
+
+        mp.clear();
+
+        Node clone_node = new Node(node.val);
+        mp.put(node, clone_node);
+
+        Queue<Node> que = new LinkedList<>();
+        que.offer(node);
+
+        BFS(que);
+
+        return clone_node;
+    }
+}
+
+// Complexity — all 4 approaches
+// Let V = number of nodes and E = number of edges.
+// Time: O(V + E)
+// Space: O(V)
