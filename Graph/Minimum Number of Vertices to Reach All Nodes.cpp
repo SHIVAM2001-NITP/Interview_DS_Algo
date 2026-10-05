@@ -27,3 +27,29 @@ public:
         return result;
     }
 };
+
+//JAVA
+class Solution {
+    public List<Integer> findSmallestSetOfVertices(int n, List<List<Integer>> edges) {
+        boolean[] indegree = new boolean[n];
+
+        for (List<Integer> edge : edges) {
+            int u = edge.get(0);
+            int v = edge.get(1);
+
+            indegree[v] = true;
+        }
+
+        List<Integer> result = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            if (!indegree[i])
+                result.add(i);
+        }
+
+        return result;
+    }
+}
+// Complexity
+// Time: O(V + E)
+// Space: O(V)
