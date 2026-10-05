@@ -156,3 +156,159 @@ public:
         
     }
 };
+
+
+// JAVA
+
+Approach 1 — BFS
+class Solution {
+    int[][] directions = {{1,1},{0,1},{1,0},{0,-1},{-1,0},{-1,-1},{1,-1},{-1,1}};
+
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        if (m == 0 || n == 0 || grid[0][0] != 0)
+            return -1;
+
+        Queue<int[]> que = new LinkedList<>();
+        que.offer(new int[]{0, 0});
+        grid[0][0] = 1;
+
+        int steps = 1;
+
+        while (!que.isEmpty()) {
+            int N = que.size();
+
+            while (N-- > 0) {
+                int[] curr = que.poll();
+                int x = curr[0];
+                int y = curr[1];
+
+                if (x == m - 1 && y == n - 1)
+                    return steps;
+
+                for (int[] dir : directions) {
+                    int x_ = x + dir[0];
+                    int y_ = y + dir[1];
+
+                    if (x_ >= 0 && x_ < m && y_ >= 0 && y_ < n && grid[x_][y_] == 0) {
+                        que.offer(new int[]{x_, y_});
+                        grid[x_][y_] = 1;
+                    }
+                }
+            }
+
+            steps++;
+        }
+
+        return -1;
+    }
+}
+Approach 2 — Dijkstra using PriorityQueue
+class Solution {
+    int[][] directions = {{1,1},{0,1},{1,0},{0,-1},{-1,0},{-1,-1},{1,-1},{-1,1}};
+
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        if (m == 0 || n == 0 || grid[0][0] != 0)
+            return -1;
+
+        int[][] result = new int[m][n];
+        for (int i = 0; i < m; i++)
+            Arrays.fill(result[i], Integer.MAX_VALUE);
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+
+        pq.offer(new int[]{0, 0, 0});
+        result[0][0] = 0;
+
+        while (!pq.isEmpty()) {
+            int[] curr = pq.poll();
+
+            int d = curr[0];
+            int x = curr[1];
+            int y = curr[2];
+
+            for (int[] dir : directions) {
+                int x_ = x + dir[0];
+                int y_ = y + dir[1];
+                int dist = 1;
+
+                if (x_ >= 0 && x_ < m && y_ >= 0 && y_ < n &&
+                    grid[x_][y_] == 0 && d + dist < result[x_][y_]) {
+
+                    pq.offer(new int[]{d + dist, x_, y_});
+                    result[x_][y_] = d + dist;
+                }
+            }
+        }
+
+        if (result[m - 1][n - 1] == Integer.MAX_VALUE)
+            return -1;
+
+        return result[m - 1][n - 1] + 1;
+    }
+}
+Approach 3 — Dijkstra using Queue
+
+Since every edge has weight 1, this behaves like BFS. Keeping your original idea:
+
+class Solution {
+    int[][] directions = {{1,1},{0,1},{1,0},{0,-1},{-1,0},{-1,-1},{1,-1},{-1,1}};
+
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        if (m == 0 || n == 0 || grid[0][0] != 0)
+            return -1;
+
+        int[][] result = new int[m][n];
+        for (int i = 0; i < m; i++)
+            Arrays.fill(result[i], Integer.MAX_VALUE);
+
+        Queue<int[]> pq = new LinkedList<>();
+
+        pq.offer(new int[]{0, 0, 0});
+        result[0][0] = 0;
+
+        while (!pq.isEmpty()) {
+            int[] curr = pq.poll();
+
+            int d = curr[0];
+            int x = curr[1];
+            int y = curr[2];
+
+            for (int[] dir : directions) {
+                int x_ = x + dir[0];
+                int y_ = y + dir[1];
+                int dist = 1;
+
+                if (x_ >= 0 && x_ < m && y_ >= 0 && y_ < n &&
+                    grid[x_][y_] == 0 && d + dist < result[x_][y_]) {
+
+                    pq.offer(new int[]{d + dist, x_, y_});
+                    result[x_][y_] = d + dist;
+                }
+            }
+        }
+
+        if (result[m - 1][n - 1] == Integer.MAX_VALUE)
+            return -1;
+
+        return result[m - 1][n - 1] + 1;
+    }
+// }
+// Complexity
+
+// For an m × n grid:
+
+// Approach	                           Time	         Space
+// BFS	                            O(m × n)	    O(m × n)
+// Dijkstra + PriorityQueue	  O(m × n log(m × n))	O(m × n)
+// Dijkstra + Queue	                O(m × n)	    O(m × n)
+
+// Best approach: BFS, because every move has the same cost 1
