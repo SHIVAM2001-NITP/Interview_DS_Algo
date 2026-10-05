@@ -135,3 +135,68 @@ class Solution {
         return countNodes < N ? -1 : answer;
     }
 }
+
+//DFS
+class Solution {
+    int answer = 0;
+
+    boolean DFS(int u, Map<Integer, List<Integer>> adj, String colors, int[][] t, int[] visited) {
+        if (visited[u] == 1)
+            return false; // cycle
+
+        if (visited[u] == 2)
+            return true; // already processed
+
+        visited[u] = 1;
+
+        for (int v : adj.getOrDefault(u, new ArrayList<>())) {
+            if (!DFS(v, adj, colors, t, visited))
+                return false;
+
+            for (int i = 0; i < 26; i++) {
+                t[u][i] = Math.max(t[u][i], t[v][i]);
+            }
+        }
+
+        t[u][colors.charAt(u) - 'a']++;
+
+        answer = Math.max(answer, t[u][colors.charAt(u) - 'a']);
+
+        visited[u] = 2;
+
+        return true;
+    }
+
+    public int largestPathValue(String colors, int[][] edges) {
+        int N = colors.length();
+
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+
+        for (int[] vec : edges) {
+            int u = vec[0];
+            int v = vec[1];
+
+            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+        }
+
+        int[][] t = new int[N][26];
+        int[] visited = new int[N];
+
+        for (int i = 0; i < N; i++) {
+            if (visited[i] == 0) {
+                if (!DFS(i, adj, colors, t, visited))
+                    return -1;
+            }
+        }
+
+        return answer;
+    }
+ }
+
+// Complexity
+// Time: O(V + 26E) → O(V + E)
+// Space: O(V + 26V + E) → O(V + E)
+
+// visited[u] = 0 → not visited
+// visited[u] = 1 → currently in recursion stack
+// visited[u] = 2 → completely processed
