@@ -122,3 +122,43 @@ class Solution {
         return maxRank;
     }
 }
+// Approach-2 (Using degree count & keeping a check if nodes are connected)
+// T.C. - O(V^2)
+class Solution {
+    public int maximalNetworkRank(int n, int[][] roads) {
+        int[] degree = new int[n];
+        boolean[][] connected = new boolean[n][n];
+
+        for (int[] road : roads) {
+            int u = road[0];
+            int v = road[1];
+
+            degree[u]++;
+            degree[v]++;
+
+            connected[u][v] = true;
+            connected[v][u] = true;
+        }
+
+        int maxRank = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int i_rank = degree[i];
+                int j_rank = degree[j];
+
+                int rank = i_rank + j_rank;
+
+                if (connected[i][j] || connected[j][i])
+                    rank -= 1;
+
+                maxRank = Math.max(maxRank, rank);
+            }
+        }
+
+        return maxRank;
+    }
+}
+
+// Time: O(V² + E) → O(V²)
+// Space: O(V²) for connected[][]
