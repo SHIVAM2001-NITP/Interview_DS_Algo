@@ -76,3 +76,55 @@ public:
         return topologicalSortBFS(adj, N, indegree);
     }
 };
+
+//JAVA
+
+class Solution {
+    int topologicalSortBFS(Map<Integer, List<Integer>> adj, int N, int[] indegree) {
+        Queue<Integer> que = new LinkedList<>();
+
+        for (int i = 1; i <= N; i++) {
+            if (indegree[i] == 0)
+                que.offer(i);
+        }
+
+        int count = 0;
+        int result = 0;
+
+        while (!que.isEmpty()) {
+            result++;
+            int n = que.size();
+
+            while (n-- > 0) {
+                int curr = que.poll();
+                count++;
+
+                for (int x : adj.getOrDefault(curr, new ArrayList<>())) {
+                    indegree[x]--;
+                    if (indegree[x] == 0)
+                        que.offer(x);
+                }
+            }
+        }
+
+        return count == N ? result : -1;
+    }
+
+    public int minimumSemesters(int N, int[][] relations) {
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        int[] indegree = new int[N + 1];
+
+        for (int[] relation : relations) {
+            int x = relation[0];
+            int y = relation[1];
+
+            adj.computeIfAbsent(x, k -> new ArrayList<>()).add(y);
+            indegree[y]++;
+        }
+
+        return topologicalSortBFS(adj, N, indegree);
+    }
+}
+
+// Time: O(N + E)
+// Space: O(N + E)
